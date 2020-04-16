@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Html Messages</title>
+</head>
+<body onload="main()"></body>
+
+<script>
+  const fs = require('fs');
+  const path = require('path');
+  const FileSystemInFile = require('@brightsign/filesysteminfile');
+  const FilesystemClass = require('@brightsign/usbfilesystem');
+  
+  var bsSocketMessage = new BSDatagramSocket();
+  var usbfilesystem = new FilesystemClass();
+
+  function main() {
+    console.log("Starting usb javascript...");
+    
+    var fsOpen = false;
+    var assetFiles = [];
+
+    bsSocketMessage.BindLocalPort(5000)
+    bsSocketMessage.ondatagram = function(e){
+      var txtDec = new TextDecoder("utf-8");
+      console.log("Received " + txtDec.decode(e.getBytes()));
+
+      var fields = (txtDec.decode(e.getBytes()).toLowerCase()).split('!');
+      if (fields.length > 0) {
+        var match = ('usb' === fields[0]) ? true : false;
+        if (match) {
+          var command = fields[1];
+          switch (command) {
+            case 'startfilesystem':
+              console.log('execute startfilesystem');
+              fsOpen = true;
+              break;
+
+            case 'addasset':
+              if (fsOpen) {
+                console.log('execute addasset');
+
+                // Add 
+                var name = fields[2];
+                if (name === "") {
+                  console.log('Error: addasset requries filename or directory name');
+                } else {
+                  console.log('adding asset ' + name);
+                  assetFiles.push({name: name});
+                }
+              } else {
+                console.log('Filesystem is closed, send startfilesystem');
+              }
+              break;
+
+            case 'closefilesystem':
+              if (fsOpen) {
+                console.log('execute closefilesystem');
+                
+                console.log('building filesystem ...');
+                // Create a 1GB backing file for the file system
+                var fd = fs.openSync(getMountPoint() + "/" + getStorageFile(), 'w');
+                fs.writeSync(fd, Buffer.alloc(1), 0, 1, (1024*1024*1024) - 1);
+                fs.closeSync(fd);
+                // Create FileSystemInFile using the backing file
+                var fsif = new FileSystemInFile(getMountPoint() + "/" + getStorageFile());
+                
+                console.log('formatting filesystem ...');
+                // Format the file system
+                fsif.format("exfat")
+                .then(function() {
+                  // Mount the file system
+                  return fsif.mount();
+                })
+                .then(function(mount_point) {
+                  // The mount point can now be used as the root in which to create/copy files and directories
+                  // using standard node js file operations or the asset pool
+                  if (assetFiles.length > 0) {
+                    console.log('copying files to filesystem  ...');
+
+                    // Copy all files and directories provided from 'addasset' UDP command
+                    for (let i=0; i < assetFiles.length; i++) {
+                      copyFolderRecursiveSync(assetFiles[i].name, mount_point);
+                      console.log('Copied ' + assetFiles[i].name);
+                    }
+                    console.log('Copied all requested files/directories to filesystem');
+                    fsif.unmount();
+                  }
+                })
+                .catch(function(err) {
+                  console.log("=== Failed to Enable Usb");
+                  console.log(JSON.stringify(err));
+                });
+              }
+              break;
+            case 'mount':
+              if (fs.existsSync( getMountPoint() + "/" + getStorageFile() )) {
+                usbfilesystem.enable( getMountPoint() + "/" + getStorageFile() )
+                .then(function (result) {
+                  console.log("=== Successfully mounted! " + getStorageFile() );
+                })
+                .catch(function(err) {
+                  console.log("=== Failed to Enable Usb");
+                  console.log(JSON.stringify(err));
+                });
+              }
+              break;
+            case 'unmount':
+              usbfilesystem.disable()
+              .then(function() => {
+                console.log("=== Successfully unmounted");
+              })
+              .catch(function(err) {
+                console.log("=== Failed to Disable Usb");
+                console.log( JSON.stringify(err) );
+              });
+              break;
+          }
+        }
+      }
+    };
+  }
+
+  function copyFileSync( source, target ) {
+    var targetFile = target;
+
+    //if target is a directory a new file with the same name will be created
+    if ( fs.existsSync( target ) ) {
+      if ( fs.lstatSync( target ).isDirectory() ) {
+        targetFile = path.join( target, path.basename( source ) );
+      }
+    }
+
+    fs.writeFileSync(targetFile, fs.readFileSync(source));
+  }
+
+  function copyFolderRecursiveSync( source, target ) {
+    var files = [];
+
+    //check if folder needs to be created or integrated
+    var targetFolder = path.join( target, path.basename( source ) );
+    if ( !fs.existsSync( targetFolder ) ) {
+        fs.mkdirSync( targetFolder );
+    }
+
+    //copy
+    if ( fs.lstatSync( source ).isDirectory() ) {
+      files = fs.readdirSync( source );
+      files.forEach( function ( file ) {
+        var curSource = path.join( source, file );
+        if ( fs.lstatSync( curSource ).isDirectory() ) {
+          copyFolderRecursiveSync( curSource, targetFolder );
+        } else {
+          copyFileSync( curSource, targetFolder );
+        }
+      });
+    }
+  }
+
+  function getStorageFile() {
+    return 'usbstore';
+  }
+
+  function getMountPoint() {
+    return '/storage/sd';
+  }
+
+</script>
+</html>
