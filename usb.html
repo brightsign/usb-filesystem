@@ -74,6 +74,8 @@
                   return fsif.mount();
                 })
                 .then(function(mount_point) {
+                  let promiseList = [];
+
                   // The mount point can now be used as the root in which to create/copy files and directories
                   // using standard node js file operations or the asset pool
                   if (assetFiles.length > 0) {
@@ -81,14 +83,19 @@
 
                     // Copy all files and directories provided from 'addasset' UDP command
                     for (let i=0; i < assetFiles.length; i++) {
-                      copyFolderRecursiveSync(assetFiles[i].name, mount_point);
+                      promiseList.push(copyFile("/storage/sd/" + assetFiles[i].name, mount_point + '/' + assetFiles[i].name));
                       console.log('Copied ' + assetFiles[i].name);
                     }
-                    console.log('Copied all requested files/directories to filesystem');
-                    fsif.unmount();
+                    return Promise.all(promiseList);
                   }
                 })
+                .then(function() {
+                  console.log('=== Copied all requested files to filesystem. Ready to mount USB!');
+                  fsif.unmount();
+                  fsOpen = false;
+                })
                 .catch(function(err) {
+                  fsOpen = false;
                   console.log("=== Failed to Enable Usb");
                   console.log(JSON.stringify(err));
                 });
@@ -108,7 +115,7 @@
               break;
             case 'unmount':
               usbfilesystem.disable()
-              .then(function() => {
+              .then(function() {
                 console.log("=== Successfully unmounted");
               })
               .catch(function(err) {
@@ -122,40 +129,22 @@
     };
   }
 
-  function copyFileSync( source, target ) {
-    var targetFile = target;
+  function copyFile( source, target ) {
+    return new Promise(function(resolve, reject) {
+      console.log(`=== Copying file ${source} to ${target}, this may take 1-2 minutes.`);
+      var readStream = fs.createReadStream(source);
+      var writeStream = fs.createWriteStream(target);
 
-    //if target is a directory a new file with the same name will be created
-    if ( fs.existsSync( target ) ) {
-      if ( fs.lstatSync( target ).isDirectory() ) {
-        targetFile = path.join( target, path.basename( source ) );
-      }
-    }
-
-    fs.writeFileSync(targetFile, fs.readFileSync(source));
-  }
-
-  function copyFolderRecursiveSync( source, target ) {
-    var files = [];
-
-    //check if folder needs to be created or integrated
-    var targetFolder = path.join( target, path.basename( source ) );
-    if ( !fs.existsSync( targetFolder ) ) {
-        fs.mkdirSync( targetFolder );
-    }
-
-    //copy
-    if ( fs.lstatSync( source ).isDirectory() ) {
-      files = fs.readdirSync( source );
-      files.forEach( function ( file ) {
-        var curSource = path.join( source, file );
-        if ( fs.lstatSync( curSource ).isDirectory() ) {
-          copyFolderRecursiveSync( curSource, targetFolder );
-        } else {
-          copyFileSync( curSource, targetFolder );
-        }
-      });
-    }
+      readStream.pipe(writeStream)
+      .on("finish", function() {
+        console.log(`=== Wrote ${source} to ${target}`);
+        resolve();
+      })
+      .on("error", function(err) {
+        console.log(`=== Error: ${JSON.stringify(err)}`);
+        reject(err);
+      })
+    });
   }
 
   function getStorageFile() {

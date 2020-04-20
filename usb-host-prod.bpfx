@@ -3,7 +3,7 @@
     "sign": {
       "properties": {
         "id": "ccb72c63-d5e5-4fa8-8219-c29590a6081b",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "name": "usb-host-prod",
         "videoMode": "1920x1080x60p",
         "model": "XT1143",
@@ -283,7 +283,7 @@
           "max": 100
         }
       },
-      "lastModifiedTime": "2020-04-16T23:01:29.128Z"
+      "lastModifiedTime": "2020-04-20T17:23:49.756Z"
     },
     "zones": {
       "zonesById": {
@@ -639,6 +639,7 @@
     "deviceWebPages": {},
     "scriptPlugins": {},
     "parserPlugins": {},
+    "videoModePlugins": {},
     "auxiliaryFiles": {},
     "linkedPresentations": {},
     "partnerProducts": {},
@@ -669,14 +670,7 @@
     }
   },
   "canvas": {
-    "tab": "CONTENT",
-    "history": [
-      {
-        "tab": "CONTENT"
-      }
-    ],
-    "future": [],
-    "isBsUndoable": true
+    "tab": "CONTENT"
   },
   "selection": {
     "hovered": null,
@@ -685,46 +679,17 @@
       "type": "ZONE",
       "selectableType": "ZONE"
     },
-    "selectionEntities": {
-      "95421586-1166-403e-8f2d-b88f695cecec": {
-        "id": "95421586-1166-403e-8f2d-b88f695cecec",
-        "type": "Html",
-        "selectableType": "STATE",
-        "selectableData": null
-      }
-    },
+    "selectionEntities": {},
     "isEventAdvancedEnabled": false,
-    "activeAssetMenuTab": "WIDGETS",
-    "history": [
-      {
-        "hovered": null,
-        "selectionContainer": {
-          "id": "e57f3434-4eb5-4d49-88dd-02feb50f750a",
-          "type": "ZONE",
-          "selectableType": "ZONE"
-        },
-        "selectionEntities": {
-          "95421586-1166-403e-8f2d-b88f695cecec": {
-            "id": "95421586-1166-403e-8f2d-b88f695cecec",
-            "type": "Html",
-            "selectableType": "STATE",
-            "selectableData": null
-          }
-        },
-        "isEventAdvancedEnabled": false,
-        "activeAssetMenuTab": "WIDGETS"
-      }
-    ],
-    "future": [],
-    "isBsUndoable": true
+    "activeAssetMenuTab": "WIDGETS"
   },
   "interactiveCanvas": {
     "statePositionById": {
       "95421586-1166-403e-8f2d-b88f695cecec": {
         "id": "95421586-1166-403e-8f2d-b88f695cecec",
         "position": {
-          "x": 848.4848022460938,
-          "y": 164.84848022460938
+          "x": 856.1431884765625,
+          "y": 208.88412475585938
         }
       }
     },
@@ -747,9 +712,9 @@
     },
     "viewTransformByZoneId": {
       "e57f3434-4eb5-4d49-88dd-02feb50f750a": {
-        "x": -290.99999999999994,
-        "y": -23.000000000000057,
-        "k": 0.825
+        "x": -39.02318195088969,
+        "y": -44.67919736300851,
+        "k": 0.5223043052508886
       }
     },
     "interactiveScaleType": "Large",
