@@ -34,7 +34,7 @@ In the Presentation view under  “Presentation Settings” -> “Interactive”
 
 In BrightAuthor:connected, add the html / JavaScript file by adding an HTML Widget onto the interactive plane. From here, sending the UDPs mentioned below can be sent from anywhere in the presentation or from other Javascript to the destination IP and destination port. 
 
-Command Parameter Structure: usb!<command>!<command parameter (optional)>
+Command Parameter Structure: usb!command!command parameter (optional)
 
 2.3. Managing Filesystem
 
