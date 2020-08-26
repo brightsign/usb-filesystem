@@ -40,6 +40,8 @@
             case 'addasset':
               if (fsOpen) {
                 console.log('execute addasset');
+                // initiate it for not copying the same file again
+                assetFiles = [];
 
                 // Add 
                 var name = fields[2];
