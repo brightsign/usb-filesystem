@@ -1,69 +1,89 @@
 # usb-filesystem
-example of using a brightsign device as a filesystem over USB
+Example using a BrightSign device as a filesystem over USB in Javascript.
 
-1. Overview
+## Overview
 
-BrightSign players support USB role reversal modes through the USB-C ports on BrightSign players. The BrightSign would be a USB client for an external device to utilize. The BrightSign can dynamically build a filesystem that is needed for the USB client to reference as the USB image. If needed, please ask BrightSign for an example presentation that demonstrates how to utilize the commands outlined below. 
+BrightSign players support USB role reversal modes through the USB-C ports on BrightSign players except for LS models. The BrightSign would be a USB client for an external device to utilize. The BrightSign can dynamically build a filesystem that is needed for the USB client to reference as the USB image.
 
-Note: If a presentation has been provided, this is to be used as an example when integrating projects with USB or Filesystem objects in Brightscript or Javascript.
+This project provides an example for how to create a USB image file (.img) using built in BrightSign Javascript APIs, managing this filesystem file, and mounting or unmounting the filesystem as a mass storage device onto an external system. 
 
-Support:
+### System Requirements
 
-BrightSign OS 8.1.x
+- BrightSign OS 8.1.x
+- BrightSign XD and XT Series 4
 
-BrightSign XD and XT Series 4
+### Brightsign Javascript APIs
 
-1.1. Scope
+[@brightsign/filesysteminfile](https://brightsign.atlassian.net/wiki/spaces/DOC/pages/404622545/filesysteminfile)
 
-Documentation on the usage for Brightsign Javascript APIs:
-
-@brightsign/filesysteminfile
-
-@brightsign/usbfilesystem
+[@brightsign/usbfilesystem](https://brightsign.atlassian.net/wiki/spaces/DOC/pages/404622824/usbfilesystem)
 
 
-2. Instructions
+## Example BrightAuthor:connected Presentation
 
-2.1. Updating USB Filesystem
+The example presentation and HTML file encompasses one approach for how you may send messages to HTML. The .html file is meant to highlight how to implement and utilize the filesystem and usb APIs. 
 
 UDP commands are utilized throughout the sample presentation provided. The correct destination IP and port should be set in order for the Javascript app to receive the UDP commands sent from BrightAuthor:connected to the app. 
 
 In the Presentation view under  “Presentation Settings” -> “Interactive” -> “Networking” -> “Specific IP Address” can be 127.0.0.1 and UDP Destination Port should be 5000. 
 
-2.2. BrightAuthor Integration
 
-In BrightAuthor:connected, add the html / JavaScript file by adding an HTML Widget onto the interactive plane. From here, sending the UDPs mentioned below can be sent from anywhere in the presentation or from other Javascript to the destination IP and destination port. 
+## BrightAuthor:connected  Integration
 
-Command Parameter Structure: usb!command!command parameter (optional)
+In BrightAuthor:connected, add the html / JavaScript file by adding an HTML Widget onto the interactive plane. From here, sending the UDPs mentioned below can be sent from anywhere in the presentation or from other Javascript processes to the destination IP and destination port. 
 
-2.3. Managing Filesystem
+Command Parameter Structure
+```
+usb!!<command>!!<command parameter (optional)>
+```
+
+### Managing Filesystem
 
 There are a couple commands which should be sent in order to allow for the app to understand how it should create the filesystem and the contents that are copied. 
+___
 
-Command: usb!startfilesystem
+_Command_: 
+```
+usb!!startfilesystem
+```
 
-Description: Sends a command to notify the app to acknowledge when to start listening to the addasset UDP commands below. 
+_Description_: Sends a command to notify the app to acknowledge when to start listening to the addasset UDP commands below. 
+___
 
-Command: usb!addasset!<filename or directory>
-  
-Description: Sends a command to notify the app what is the name of a file or directory that should be copied to the usb drive. This command can be sent multiple times.
+_Command_: 
+```
+usb!!addasset!!<filename or directory>
+```
 
-Note: The current expectation of this example is that the source dependencies live on the root of the SD card.
+_Description_: Sends a command to notify the app what is the name of a file or directory that should be copied to the usb drive. This command can be sent multiple times.
 
-Command: usb!closefilesystem
+__Note__: The current expectation of this example is that the source dependencies live on the root of the SD card.
+___
 
-Description: Sends a command to notify the app to close and build the filesystem. The size for this example is 1GB, although this can be updated in the Javascript or additional support can be added to manage this at a more granular level using either “User Variables” or additional UDP commands.
+_Command_: 
+```
+usb!!closefilesystem
+```
 
-2.4. Mount/Unmount filesystem
+_Description_: Sends a command to notify the app to close and build the filesystem. The size for this example is 1GB, although this can be updated in the Javascript or additional support can be added to manage this at a more granular level using either “User Variables” or additional UDP commands.
+___
 
-2.4.1. Mount
+### Mount filesystem
 
-Command: usb!mount
+_Command_: 
+```
+usb!!mount
+```
 
-Description: Sends the command to mount the USB filesystem to the external client via the USB-C-to-USB-A cable.
+_Description_: Sends the command to mount the USB filesystem to the external client via the USB-C-to-USB-A cable.
+___
 
-2.4.2. Unmount
+### Unmount filesystem
 
-Command: usb!unmount
+_Command_: 
+```
+usb!!unmount
+```
 
-Description: Sends the command to unmount the USB filesystem to the external client via the USB-C-to-USB-A cable.
+_Description_: Sends the command to unmount the USB filesystem to the external client via the USB-C-to-USB-A cable.
+___
