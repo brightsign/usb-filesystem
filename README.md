@@ -1,5 +1,5 @@
 # usb-filesystem
-Example using a BrightSign device as a filesystem over USB in Javascript.
+Example using BrightSign software to host a USB filesystem in Javascript to connected peripherals.
 
 ## Overview
 
