@@ -491,7 +491,7 @@
                   "params": [
                     {
                       "type": "Text",
-                      "value": "usb!startfilesystem"
+                      "value": "usb!!startfilesystem"
                     }
                   ]
                 }
@@ -511,7 +511,7 @@
                   "params": [
                     {
                       "type": "Text",
-                      "value": "usb!addasset!test.txt"
+                      "value": "usb!!addasset!!test.txt"
                     }
                   ]
                 }
@@ -531,7 +531,7 @@
                   "params": [
                     {
                       "type": "Text",
-                      "value": "usb!closefilesystem"
+                      "value": "usb!!closefilesystem"
                     }
                   ]
                 }
@@ -551,7 +551,7 @@
                   "params": [
                     {
                       "type": "Text",
-                      "value": "usb!mount"
+                      "value": "usb!!mount"
                     }
                   ]
                 }
@@ -571,7 +571,7 @@
                   "params": [
                     {
                       "type": "Text",
-                      "value": "usb!unmount"
+                      "value": "usb!!unmount"
                     }
                   ]
                 }
