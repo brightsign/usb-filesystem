@@ -3,13 +3,13 @@ Example using BrightSign software to host a USB filesystem in Javascript to conn
 
 ## Overview
 
-BrightSign players support USB role reversal modes through the USB-C ports on BrightSign players except for LS models. The BrightSign would be a USB client for an external device to utilize. The BrightSign can dynamically build a filesystem that is needed for the USB client to reference as the USB image.
+BrightSign players support USB role reversal modes through the USB-C ports on XD and XT Series 4. The BrightSign would be a USB client for an external device to utilize. The BrightSign can dynamically build a filesystem that is needed for the USB client to reference as the USB image.
 
 This project provides an example for how to create a USB image file (.img) using built in BrightSign Javascript APIs, managing this filesystem file, and mounting or unmounting the filesystem as a mass storage device onto an external system. 
 
 ### System Requirements
 
-- BrightSign OS 8.1.x
+- BrightSign OS 8.1.42+
 - BrightSign XD and XT Series 4
 
 ### Brightsign Javascript APIs
@@ -32,7 +32,7 @@ In the Presentation view under  “Presentation Settings” -> “Interactive”
 
 In BrightAuthor:connected, add the html / JavaScript file by adding an HTML Widget onto the interactive plane. From here, sending the UDPs mentioned below can be sent from anywhere in the presentation or from other Javascript processes to the destination IP and destination port. 
 
-Command Parameter Structure
+Command Parameter Structure (case insensitive)
 ```
 usb!!<command>!!<command parameter (optional)>
 ```
